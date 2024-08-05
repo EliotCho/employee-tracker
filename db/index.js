@@ -8,3 +8,27 @@ const pool = new Pool({
   port: 5432,
 });
 
+class DB {
+  constructor() {}
+  poolConnect = pool.connect();
+  
+  updateEmployeeManagers() {
+    // update employee managers
+  }
+
+  viewEmployeesByManagers() {
+    // view employees by managers
+  }
+
+  viewEmployeesByDepartment() {
+    // view employees by department
+  }
+
+  deleteDepartmentRolesAndEmployees() {
+    // delete department roles and employees
+  }
+
+  combinedSalariesOfAllEmployeesInThatDepartment() {
+    // combined salaries of all employees in that department
+  }
+}

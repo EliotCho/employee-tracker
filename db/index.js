@@ -60,7 +60,7 @@ class DB {
 
   updateEmployeeRole(employee_id, role_id) {
     // update an employee role
-    return this.query("UPDATE employee SET role_id = $1 WHERE id = $2", [
+    return this.query("UPDATE employee SET manager_id = $1 WHERE id = $2", [
       role_id,
       employee_id,
     ]);

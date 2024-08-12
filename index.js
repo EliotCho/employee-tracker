@@ -232,29 +232,30 @@ function add_an_employee() {
         choices: roles,
       }).then((res) => {
         let role_id = res.role_id;
-        db.viewAllEmployees()
-          .then(({ rows }) => {
-            let managers = rows.map(({ id, first_name, last_name }) => ({
-              name: `${first_name} ${last_name}`,
-              value: id,
-            }));
 
-            managers.unshift({ name: "None", value: null });
+        db.viewAllEmployees().then(({ rows }) => {
+          let managers = rows.map(({ id, first_name, last_name }) => ({
+            name: `${first_name} ${last_name}`,
+            value: id,
+          }));
 
-            prompt({
-              type: "list",
-              name: "manager_id",
-              message: "Who is the manager of the employee?",
-              choices: managers,
-            }).then((res) => {
+          managers.unshift({ name: "None", value: null });
+
+          prompt({
+            type: "list",
+            name: "manager_id",
+            message: "Who is the manager of the employee?",
+            choices: managers,
+          })
+            .then((res) => {
               let manager_id = res.manager_id;
               db.addEmployee(first_name, last_name, role_id, manager_id);
-            });
-          })
-          .then(() =>
-            console.log(`Added ${first_name} ${last_name} to the database`)
-          )
-          .then(() => init());
+            })
+            .then(() =>
+              console.log(`Added ${first_name} ${last_name} to the database`)
+            )
+            .then(() => init());
+        });
       });
     });
   });

@@ -216,7 +216,47 @@ function add_an_employee() {
     //   message: "What is the manager id of the employee?",
     // },
   ]).then((res) => {
-    db.addEmployee(res).then(() => init());
+    let first_name = res.first_name;
+    let last_name = res.last_name;
+
+    db.viewAllRoles().then(({ rows }) => {
+      let roles = rows.map(({ id, title }) => ({
+        name: title,
+        value: id,
+      }));
+
+      prompt({
+        type: "list",
+        name: "role_id",
+        message: "What is the role id of the employee?",
+        choices: roles,
+      }).then((res) => {
+        let role_id = res.role_id;
+        db.viewAllEmployees()
+          .then(({ rows }) => {
+            let managers = rows.map(({ id, first_name, last_name }) => ({
+              name: `${first_name} ${last_name}`,
+              value: id,
+            }));
+
+            managers.unshift({ name: "None", value: null });
+
+            prompt({
+              type: "list",
+              name: "manager_id",
+              message: "Who is the manager of the employee?",
+              choices: managers,
+            }).then((res) => {
+              let manager_id = res.manager_id;
+              db.addEmployee(first_name, last_name, role_id, manager_id);
+            });
+          })
+          .then(() =>
+            console.log(`Added ${first_name} ${last_name} to the database`)
+          )
+          .then(() => init());
+      });
+    });
   });
 }
 
@@ -234,7 +274,26 @@ function update_an_employee_role() {
         choices: employees,
       },
     ]).then((res) => {
-      db.updateEmployeeRole(res).then(() => init());
+      let employee_id = res.id;
+      db.viewAllRoles(res).then(({ row }) => {
+        let roles = rows.map(({ id, title }) => ({
+          name: title,
+          value: id,
+        }));
+        prompt([
+          {
+            type: "list",
+            name: "role_id",
+            message: "What is the new role id of the employee?",
+            choices: roles,
+          },
+        ])
+          .then((res) => db.updateEmployeeRole(employee_id, res.role_id))
+          .then(() =>
+            console.log(`Added ${employee_id}, ${res.role_id} to the database`)
+          )
+          .then(() => init());
+      });
     });
   });
 }
